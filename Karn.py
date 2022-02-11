@@ -88,12 +88,7 @@ async def on_reaction_add(reaction,user):
         await reaction.message.add_reaction(reaction)
     
 
-
-client.run("OTQxNDAyOTQ1NDQ1MDY0Nzg1.YgVb0A.q998ewmdXJXJHjBPX3gYssq_4bA")
-
-
-
-
-
-
+with open("config.json","r") as config_file:
+    config = json.load(config_file)
+client.run(config["bot_token"])
 

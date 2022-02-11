@@ -130,3 +130,6 @@ dmypy.json
 
 #server plueses file
 server_pluses.json
+
+#bot config file
+config.json
