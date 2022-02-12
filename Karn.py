@@ -3,6 +3,7 @@
 
 import discord
 import json
+import scryfall
 
 intents = discord.Intents.default()
 intents.members = True
@@ -17,6 +18,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    await scryfall.process_message(message)
+
     if message.author != client.user:
         if "?hello" in message.content:
             await message.channel.send("Hello!")
@@ -42,7 +45,7 @@ async def on_message(message):
 
         if "good bot" in message.content.lower():
             await message.channel.send("\u263A") # messages smiley face
-        
+
 
         if message.content.startswith("?plusreset"):
             if message.author.id == 256446512551297026:
@@ -83,10 +86,10 @@ async def on_reaction_add(reaction,user):
             await channel.send(output, reference = reaction.message)
             with open("server_pluses.json","w") as plus_file:
                 json.dump(member_pluses, plus_file)
-    
+
     elif reaction.emoji == "\U0001F35E": # bread
         await reaction.message.add_reaction(reaction)
-    
+
 
 with open("config.json","r") as config_file:
     config = json.load(config_file)
