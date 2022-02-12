@@ -68,27 +68,30 @@ async def on_message_edit(before,after):
 
 @client.event
 async def on_reaction_add(reaction,user):
-    channel = reaction.message.channel
+    if user != client.user:
+        channel = reaction.message.channel
 
-    if reaction.emoji == "\u2795": # plus
-        if user == reaction.message.author:
-            await channel.send("No self-plussing, that's gross.", reference = reaction.message)
-        else:
-            with open("server_pluses.json","r") as plus_file:
-                member_pluses = json.load(plus_file)
-            pluser = user.name
-            plusee = reaction.message.author.name
-            pluser_id = str(user.id)
-            plusee_id = str(reaction.message.author.id)
-            member_pluses[pluser_id]["score"] -= 1 # pluser loses one plus
-            member_pluses[plusee_id]["score"] += 1 # plusee gains one
-            output = plusee + " \U0001F53C " + str(member_pluses[plusee_id]["score"]) + " / " + str(member_pluses[pluser_id]["score"]) + " \U0001F53D " + pluser
-            await channel.send(output, reference = reaction.message)
-            with open("server_pluses.json","w") as plus_file:
-                json.dump(member_pluses, plus_file)
+        await scryfall.process_reaction(reaction)
 
-    elif reaction.emoji == "\U0001F35E": # bread
-        await reaction.message.add_reaction(reaction)
+        if reaction.emoji == "\u2795": # plus
+            if user == reaction.message.author:
+                await channel.send("No self-plussing, that's gross.", reference = reaction.message)
+            else:
+                with open("server_pluses.json","r") as plus_file:
+                    member_pluses = json.load(plus_file)
+                pluser = user.name
+                plusee = reaction.message.author.name
+                pluser_id = str(user.id)
+                plusee_id = str(reaction.message.author.id)
+                member_pluses[pluser_id]["score"] -= 1 # pluser loses one plus
+                member_pluses[plusee_id]["score"] += 1 # plusee gains one
+                output = plusee + " \U0001F53C " + str(member_pluses[plusee_id]["score"]) + " / " + str(member_pluses[pluser_id]["score"]) + " \U0001F53D " + pluser
+                await channel.send(output, reference = reaction.message)
+                with open("server_pluses.json","w") as plus_file:
+                    json.dump(member_pluses, plus_file)
+
+        elif reaction.emoji == "\U0001F35E": # bread
+            await reaction.message.add_reaction(reaction)
 
 
 with open("config.json","r") as config_file:
