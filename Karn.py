@@ -1,9 +1,10 @@
 # lets make a discord bot
-# https://docs.pycord.dev/en/master/index.html <- Docs
+# https://docs.pycord.dev/en/master/index.html <- Pycord Docs
 
 import discord
 import json
 import scryfall
+import learn
 
 intents = discord.Intents.default()
 intents.members = True
@@ -20,8 +21,10 @@ async def on_ready():
 async def on_message(message):
     await scryfall.process_message(message)
 
+    await learn.process_learn(message)
+
     if message.author != client.user:
-        if "?hello" in message.content:
+        if "?hello" in message.content.lower():
             await message.channel.send("Hello!")
 
 
