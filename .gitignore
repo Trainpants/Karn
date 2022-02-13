@@ -128,8 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-#server plueses file
+#various json files
 server_pluses.json
+last_scryfall_search.json
 
 #bot config file
 config.json

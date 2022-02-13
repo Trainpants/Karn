@@ -3,6 +3,7 @@
 
 import discord
 import json
+import scryfall
 
 intents = discord.Intents.default()
 intents.members = True
@@ -17,6 +18,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    await scryfall.process_message(message)
+
     if message.author != client.user:
         if "?hello" in message.content:
             await message.channel.send("Hello!")
@@ -42,7 +45,7 @@ async def on_message(message):
 
         if "good bot" in message.content.lower():
             await message.channel.send("\u263A") # messages smiley face
-        
+
 
         if message.content.startswith("?plusreset"):
             if message.author.id == 256446512551297026:
@@ -65,28 +68,31 @@ async def on_message_edit(before,after):
 
 @client.event
 async def on_reaction_add(reaction,user):
-    channel = reaction.message.channel
+    if user != client.user:
+        channel = reaction.message.channel
 
-    if reaction.emoji == "\u2795": # plus
-        if user == reaction.message.author:
-            await channel.send("No self-plussing, that's gross.", reference = reaction.message)
-        else:
-            with open("server_pluses.json","r") as plus_file:
-                member_pluses = json.load(plus_file)
-            pluser = user.name
-            plusee = reaction.message.author.name
-            pluser_id = str(user.id)
-            plusee_id = str(reaction.message.author.id)
-            member_pluses[pluser_id]["score"] -= 1 # pluser loses one plus
-            member_pluses[plusee_id]["score"] += 1 # plusee gains one
-            output = plusee + " \U0001F53C " + str(member_pluses[plusee_id]["score"]) + " / " + str(member_pluses[pluser_id]["score"]) + " \U0001F53D " + pluser
-            await channel.send(output, reference = reaction.message)
-            with open("server_pluses.json","w") as plus_file:
-                json.dump(member_pluses, plus_file)
-    
-    elif reaction.emoji == "\U0001F35E": # bread
-        await reaction.message.add_reaction(reaction)
-    
+        await scryfall.process_reaction(reaction)
+
+        if reaction.emoji == "\u2795": # plus
+            if user == reaction.message.author:
+                await channel.send("No self-plussing, that's gross.", reference = reaction.message)
+            else:
+                with open("server_pluses.json","r") as plus_file:
+                    member_pluses = json.load(plus_file)
+                pluser = user.name
+                plusee = reaction.message.author.name
+                pluser_id = str(user.id)
+                plusee_id = str(reaction.message.author.id)
+                member_pluses[pluser_id]["score"] -= 1 # pluser loses one plus
+                member_pluses[plusee_id]["score"] += 1 # plusee gains one
+                output = plusee + " \U0001F53C " + str(member_pluses[plusee_id]["score"]) + " / " + str(member_pluses[pluser_id]["score"]) + " \U0001F53D " + pluser
+                await channel.send(output, reference = reaction.message)
+                with open("server_pluses.json","w") as plus_file:
+                    json.dump(member_pluses, plus_file)
+
+        elif reaction.emoji == "\U0001F35E": # bread
+            await reaction.message.add_reaction(reaction)
+
 
 with open("config.json","r") as config_file:
     config = json.load(config_file)
