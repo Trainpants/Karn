@@ -131,6 +131,7 @@ dmypy.json
 #various json files
 server_pluses.json
 last_scryfall_search.json
+learns.json
 
 #bot config file
 config.json
