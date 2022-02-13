@@ -1,0 +1,32 @@
+Starting Karn:
+
+-in ubuntu, ssh to virtual machine:
+$ ssh ubuntu@3.85.201.208 -i ~/.ssh/Karn.pem
+
+-cd to karn
+
+-open tmux
+$ tmux ls
+$ tmux attach
+OR (if tmux session doesn't exist)
+$ tmux
+
+-update files from git
+$ git pull
+
+-start Karn
+$ python Karn.py 
+
+-detach from tmux session (keep karn running in background)
+$ ctrl-b d
+
+-back in virtual machine ssh session
+$ ctrl-d to log out back to local machine
+
+
+
+
+
+
+
+
