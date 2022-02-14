@@ -7,7 +7,6 @@ import scryfall
 import learn
 
 
-
 intents = discord.Intents.default()
 intents.members = True
 
@@ -78,7 +77,7 @@ async def on_message_edit(before,after):
         return
     if after.channel.name != dev_channel and is_dev_env == True:
         return
-        
+
     if before.embeds == after.embeds:
         channel = after.channel
         await channel.send("Was the Grink there?",reference=after)

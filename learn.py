@@ -16,11 +16,13 @@ async def learn_message(message):
 
 
 async def learn_reaction(reaction):
-    mention = reaction.message.author.mention
-    mention = mention[0:2]+"!"+mention[2:]
-    text = reaction.message.content
-    process_learn(mention,text)
-    await reaction.message.channel.send("Okay, learned " + mention)
+    if type(reaction.emoji) != str:
+        if reaction.emoji.name == "learn": 
+            mention = reaction.message.author.mention
+            mention = mention[0:2]+"!"+mention[2:]
+            text = reaction.message.content
+            process_learn(mention,text)
+            await reaction.message.channel.send("Okay, learned " + mention)
 
 
 
