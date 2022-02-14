@@ -6,7 +6,7 @@ import re
 async def process_message(message):
     scryfall_expression = r"\[\[(.+)\]\]"
     scryfall_regex = re.compile(scryfall_expression)
-    expression_match = scryfall_regex.match(message.content)
+    expression_match = scryfall_regex.search(message.content)
     if expression_match:
         card_name = expression_match.group(1)
         async with aiohttp.ClientSession() as session:
