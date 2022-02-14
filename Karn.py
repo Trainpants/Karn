@@ -6,10 +6,13 @@ import json
 import scryfall
 import learn
 
+
+
 intents = discord.Intents.default()
 intents.members = True
 
 client = discord.Client(intents = intents)
+
 
 @client.event
 async def on_ready():
@@ -19,13 +22,19 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    
+    if message.channel.name == dev_channel and is_dev_env != True:
+        return
+    if message.channel.name != dev_channel and is_dev_env == True:
+        return
+
     await scryfall.process_message(message)
 
     await learn.process_learn(message)
 
     if message.author != client.user:
-        if "?hello" in message.content.lower():
-            await message.channel.send("Hello!")
+        if "?marco" in message.content.lower():
+            await message.channel.send("Polo")
 
 
         if message.content.startswith("?echo ") or message.content.startswith("?say"):
@@ -63,6 +72,10 @@ async def on_message(message):
 
 @client.event
 async def on_message_edit(before,after):
+    if after.channel.name == dev_channel and is_dev_env != True:
+        return
+    if after.channel.name != dev_channel and is_dev_env == True:
+        return
     if before.embeds == after.embeds:
         channel = after.channel
         await channel.send("Was the Grink there?",reference=after)
@@ -71,6 +84,11 @@ async def on_message_edit(before,after):
 
 @client.event
 async def on_reaction_add(reaction,user):
+    if reaction.message.channel.name == dev_channel and is_dev_env != True:
+        return
+    if reaction.message.channel.name != dev_channel and is_dev_env == True:
+        return
+
     if user != client.user:
         channel = reaction.message.channel
 
@@ -99,5 +117,8 @@ async def on_reaction_add(reaction,user):
 
 with open("config.json","r") as config_file:
     config = json.load(config_file)
-client.run(config["bot_token"])
+is_dev_env = config["dev_environment"]
+dev_channel = config["dev_channel"]
 
+
+client.run(config["bot_token"])

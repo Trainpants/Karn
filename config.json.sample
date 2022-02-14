@@ -1,1 +1,1 @@
-{"bot_token":"putyourtokenhere"}
+{"bot_token":"putyourtokenhere","dev_environment":true,"dev_channel":"channel name"}
