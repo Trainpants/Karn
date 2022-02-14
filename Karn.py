@@ -30,7 +30,9 @@ async def on_message(message):
 
     await scryfall.process_message(message)
 
-    await learn.process_learn(message)
+    await learn.learn_message(message)
+
+    await learn.process_gimme(message)
 
     if message.author != client.user:
         if "?marco" in message.content.lower():
@@ -76,6 +78,7 @@ async def on_message_edit(before,after):
         return
     if after.channel.name != dev_channel and is_dev_env == True:
         return
+        
     if before.embeds == after.embeds:
         channel = after.channel
         await channel.send("Was the Grink there?",reference=after)
@@ -93,6 +96,8 @@ async def on_reaction_add(reaction,user):
         channel = reaction.message.channel
 
         await scryfall.process_reaction(reaction)
+
+        await learn.learn_reaction(reaction)
 
         if reaction.emoji == "\u2795": # plus
             if user == reaction.message.author:
