@@ -4,11 +4,12 @@ import json
 import re
 
 async def process_message(message):
-    scryfall_expression = r"\[\[(.+)\]\]"
+    scryfall_expression = r"\[\[(.+?)\]\]"
     scryfall_regex = re.compile(scryfall_expression)
-    expression_match = scryfall_regex.search(message.content)
-    if expression_match:
-        card_name = expression_match.group(1)
+    called_cards = re.findall(scryfall_regex, message.content)
+    #expression_match = scryfall_regex.search(message.content)
+    #if expression_match:
+    for card_name in called_cards:#re.findall(scryfall_regex, message.content):
         async with aiohttp.ClientSession() as session:
             params = {'q': card_name}
             async with session.get('https://api.scryfall.com/cards/search', params=params) as resp:

@@ -1,4 +1,5 @@
-#learn
+#learning 
+#(previously "learn.py", renamed to avoid conflict with ?learn command in main code)
 
 import json
 import os
@@ -14,19 +15,21 @@ async def learn_message(message):
         process_learn(mention,text)
         await message.channel.send("Okay, learned " + mention)
 
+# Code section no longer necessary due to @bot.command formatting
+# see: def learn()
 
-async def learn_reaction(reaction):
-    if type(reaction.emoji) != str:
-        if reaction.emoji.name == "learn": 
-            mention = reaction.message.author.mention
-            mention = mention[0:2]+"!"+mention[2:]
-            text = reaction.message.content
-            process_learn(mention,text)
-            await reaction.message.channel.send("Okay, learned " + mention)
+#async def learn_reaction(reaction):
+#    if type(reaction.emoji) != str:
+#        if reaction.emoji.name == "learn": 
+#            mention = reaction.message.author.mention
+#            mention = mention[0:2]+"!"+mention[2:]
+#            text = reaction.message.content
+#            process_learn(mention,text)
+#            await reaction.message.channel.send("Okay, learned " + mention)
 
 
 
-def process_learn(mention,text):
+async def process_learn(mention,text):
     if not os.path.exists("learns.json"):
         with open("learns.json","w") as learn_file:
             json.dump({},learn_file)

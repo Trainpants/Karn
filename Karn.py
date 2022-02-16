@@ -4,7 +4,7 @@
 import discord
 import json
 import scryfall
-import learn
+import learning
 import re
 import random
 from discord.ext import commands
@@ -97,6 +97,12 @@ async def spongecase(ctx, *, arg):
 
 
 
+@bot.command()
+async def learn(ctx, mention, *, text):
+    await learning.process_learn(mention, text)
+    await ctx.send("Okay, learned " + mention)
+
+
 @bot.event
 async def on_message(message):
     if message.channel.name == dev_channel and is_dev_env != True:
@@ -105,8 +111,8 @@ async def on_message(message):
         return
 
     await scryfall.process_message(message)
-    await learn.learn_message(message)
-    await learn.process_gimme(message)
+    #keeping gimme not as a command so bot can respond to itself/"gimme someone" works
+    await learning.process_gimme(message) 
 
     if "good bot" in message.content.lower():
         await message.channel.send("\u263A") # messages smiley face
@@ -135,10 +141,13 @@ async def on_reaction_add(reaction,user):
     if reaction.message.channel.name != dev_channel and is_dev_env == True:
         return
 
+    if user.id == bot.user.id:
+        return
+
     channel = reaction.message.channel
 
     await scryfall.process_reaction(reaction)
-    await learn.learn_reaction(reaction)
+    await learning.learn_reaction(reaction)
 
     if reaction.emoji == "\u2795": # plus
         if user == reaction.message.author:
