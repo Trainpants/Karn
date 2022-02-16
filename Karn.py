@@ -15,6 +15,7 @@ intents.members = True
 bot = commands.Bot(command_prefix = "?", intents = intents)
 
 
+
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} as bot")
@@ -103,6 +104,7 @@ async def learn(ctx, mention, *, text):
     await ctx.send("Okay, learned " + mention)
 
 
+
 @bot.event
 async def on_message(message):
     if message.channel.name == dev_channel and is_dev_env != True:
@@ -146,8 +148,17 @@ async def on_reaction_add(reaction,user):
 
     channel = reaction.message.channel
 
+    if type(reaction.emoji) != str:
+        if reaction.emoji.name == "learn": 
+            mention = reaction.message.author.mention
+            if "!" not in mention: # if mention not in learn list, the mention doesn't have a ! in it for some reason ¯\_(ツ)_/¯
+                mention = mention[0:2]+"!"+mention[2:] 
+            text = reaction.message.content
+            await learning.process_learn(mention,text)
+            await reaction.message.channel.send("Okay, learned " + mention)
+
+
     await scryfall.process_reaction(reaction)
-    await learning.learn_reaction(reaction)
 
     if reaction.emoji == "\u2795": # plus
         if user == reaction.message.author:

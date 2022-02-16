@@ -7,9 +7,8 @@ async def process_message(message):
     scryfall_expression = r"\[\[(.+?)\]\]"
     scryfall_regex = re.compile(scryfall_expression)
     called_cards = re.findall(scryfall_regex, message.content)
-    #expression_match = scryfall_regex.search(message.content)
-    #if expression_match:
-    for card_name in called_cards:#re.findall(scryfall_regex, message.content):
+    
+    for card_name in called_cards:
         async with aiohttp.ClientSession() as session:
             params = {'q': card_name}
             async with session.get('https://api.scryfall.com/cards/search', params=params) as resp:
