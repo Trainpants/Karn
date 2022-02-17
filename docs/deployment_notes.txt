@@ -5,14 +5,17 @@ $ ssh ubuntu@3.85.201.208 -i ~/.ssh/Karn.pem
 
 -cd to karn
 
+-update files from git
+$ git pull
+
 -open tmux
 $ tmux ls
 $ tmux attach
 OR (if tmux session doesn't exist)
 $ tmux
 
--update files from git
-$ git pull
+-activate venv (if not active already)
+$ source venv/bin/activate OR $ . venv/bin/activate
 
 -start Karn
 $ python Karn.py 
