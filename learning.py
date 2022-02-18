@@ -44,8 +44,9 @@ async def process_learn(mention,text):
     if mention not in learns:
         learns[mention] = [text]
     else:
-        learns[mention].append(text)
-
+        if text not in learns[mention]:
+            learns[mention].append(text)
+            
     with open("learns.json","w") as learn_file:
         json.dump(learns, learn_file)
 

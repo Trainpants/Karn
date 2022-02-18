@@ -61,3 +61,4 @@ async def process_reaction(reaction):
                 card_image_uri = searched_cards['data'][cardnum]['image_uris']['normal']
                 await reaction.message.channel.send(card_image_uri)
 
+

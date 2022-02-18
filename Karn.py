@@ -78,6 +78,7 @@ async def echo(ctx, *, arg):
         return
     if ctx.channel.name != dev_channel and is_dev_env == True:
         return
+
     await ctx.send(arg)
 
 
@@ -88,6 +89,7 @@ async def spongecase(ctx, *, arg):
         return
     if ctx.channel.name != dev_channel and is_dev_env == True:
         return
+
     output = ""
     for index,letter in enumerate(arg):
         if index % 2 == 0:
@@ -100,8 +102,49 @@ async def spongecase(ctx, *, arg):
 
 @bot.command()
 async def learn(ctx, mention, *, text):
+    if ctx.channel.name == dev_channel and is_dev_env != True:
+        return
+    if ctx.channel.name != dev_channel and is_dev_env == True:
+        return
+
     await learning.process_learn(mention, text)
     await ctx.send("Okay, learned " + mention)
+
+
+
+@bot.command()
+async def learnsearch(ctx, mention, *, search_text):
+    if ctx.channel.name == dev_channel and is_dev_env != True:
+        return
+    if ctx.channel.name != dev_channel and is_dev_env == True:
+        return
+
+    await ctx.author.send(search_text)
+
+
+
+@bot.command()
+async def plus(ctx, mention):
+    if ctx.channel.name == dev_channel and is_dev_env != True:
+        return
+    if ctx.channel.name != dev_channel and is_dev_env == True:
+        return
+
+    pluser_id = str(ctx.author.id)
+    plusee_id = mention[3:-1]
+    if pluser_id == plusee_id:
+        await ctx.send("No self-plussing, that's gross.", reference = ctx.message)
+    else:
+        with open("server_pluses.json","r") as plus_file:
+            member_pluses = json.load(plus_file)
+        pluser = ctx.author.display_name
+        plusee = bot.get_user(int(plusee_id)).display_name
+        member_pluses[pluser_id]["score"] -= 1 # pluser loses one plus
+        member_pluses[plusee_id]["score"] += 1 # plusee gains one
+        output = plusee + " \U0001F53C " + str(member_pluses[plusee_id]["score"]) + " / " + str(member_pluses[pluser_id]["score"]) + " \U0001F53D " + pluser
+        await ctx.send(output, reference = ctx.message)
+        with open("server_pluses.json","w") as plus_file:
+            json.dump(member_pluses, plus_file)
 
 
 
@@ -131,8 +174,12 @@ async def on_message_edit(before,after):
         return
 
     if before.embeds == after.embeds:
-        channel = after.channel
-        await channel.send("Was the Grink there?",reference=after)
+        c = random.choice(range(10))
+        if c == 0:
+            await after.channel.send("Was the Grink there?", reference = after)
+        else:
+            await after.add_reaction("<:wasthegrinkthere:943576400194052197>")
+            #insert your grink emoji name/id here. Can't figure out how to do it automatically
 
 
 
@@ -166,8 +213,8 @@ async def on_reaction_add(reaction,user):
         else:
             with open("server_pluses.json","r") as plus_file:
                 member_pluses = json.load(plus_file)
-            pluser = user.name
-            plusee = reaction.message.author.name
+            pluser = user.display_name
+            plusee = reaction.message.author.display_name
             pluser_id = str(user.id)
             plusee_id = str(reaction.message.author.id)
             member_pluses[pluser_id]["score"] -= 1 # pluser loses one plus
