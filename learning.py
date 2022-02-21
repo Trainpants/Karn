@@ -59,6 +59,6 @@ async def process_gimme(message):
         with open("learns.json","r") as learn_file:
             learn_dict = json.load(learn_file)
         if mention in learn_dict:
-            await message.channel.send(random.choice(learn_dict[mention]))
+            await message.channel.send(random.choice(learn_dict[mention]), reference=message)
 
 

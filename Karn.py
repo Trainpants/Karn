@@ -24,9 +24,7 @@ async def on_ready():
 
 @bot.command()
 async def plusreset(ctx):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
     if ctx.author.id == 256446512551297026:
@@ -41,20 +39,15 @@ async def plusreset(ctx):
 
 @bot.command()
 async def marco(ctx):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
-        return
-
-    ctx.send("polo")   
+    await ctx.send("polo")   
 
 
 
 @bot.command()
 async def roll(ctx, dice: str):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
     if bool(re.match("\d*d\d+", dice)):
@@ -74,9 +67,7 @@ async def roll(ctx, dice: str):
 
 @bot.command()
 async def echo(ctx, *, arg):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
     await ctx.send(arg)
@@ -85,9 +76,7 @@ async def echo(ctx, *, arg):
 
 @bot.command()
 async def spongecase(ctx, *, arg):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
     output = ""
@@ -102,9 +91,7 @@ async def spongecase(ctx, *, arg):
 
 @bot.command()
 async def learn(ctx, mention, *, text):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
     await learning.process_learn(mention, text)
@@ -114,20 +101,38 @@ async def learn(ctx, mention, *, text):
 
 @bot.command()
 async def learnsearch(ctx, mention, *, search_text):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
-    await ctx.author.send(search_text)
+    with open("learns.json","r") as learn_file:
+        learns = json.load(learn_file) 
+    output = "" 
+    pattern = search_text
+    for learn in learns[mention]:
+        if bool(re.search(pattern, learn)):
+            output += learn + "\n"
+    if output:
+        await ctx.send(output.strip())
+
+
+
+@bot.command()
+async def learnlist(ctx, mention):
+    if dev_channel_check(ctx.channel,is_dev_env):
+        return
+
+    with open("learns.json","r") as learn_file:
+        learns = json.load(learn_file) 
+    output = ""
+    for learn in learns[mention]:
+        output += learn + "\n"
+    await ctx.send(output.strip())
 
 
 
 @bot.command()
 async def plus(ctx, mention):
-    if ctx.channel.name == dev_channel and is_dev_env != True:
-        return
-    if ctx.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(ctx.channel,is_dev_env):
         return
 
     pluser_id = str(ctx.author.id)
@@ -150,9 +155,7 @@ async def plus(ctx, mention):
 
 @bot.event
 async def on_message(message):
-    if message.channel.name == dev_channel and is_dev_env != True:
-        return
-    if message.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(message.channel,is_dev_env):
         return
 
     await scryfall.process_message(message)
@@ -168,9 +171,7 @@ async def on_message(message):
 
 @bot.event
 async def on_message_edit(before,after):
-    if after.channel.name == dev_channel and is_dev_env != True:
-        return
-    if after.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(after.channel,is_dev_env):
         return
 
     if before.embeds == after.embeds:
@@ -185,9 +186,7 @@ async def on_message_edit(before,after):
 
 @bot.event
 async def on_reaction_add(reaction,user):
-    if reaction.message.channel.name == dev_channel and is_dev_env != True:
-        return
-    if reaction.message.channel.name != dev_channel and is_dev_env == True:
+    if dev_channel_check(reaction.message.channel,is_dev_env):
         return
 
     if user.id == bot.user.id:
@@ -229,7 +228,16 @@ async def on_reaction_add(reaction,user):
 
 
 
-
+def dev_channel_check(channel, is_dev_env):
+    if type(channel) == discord.DMChannel:
+        output = False
+    elif channel.name == dev_channel and is_dev_env != True:
+        output = True
+    elif channel.name != dev_channel and is_dev_env == True:
+        output = True
+    else:
+        output = False
+    return output
 
 with open("config.json","r") as config_file:
     config = json.load(config_file)
