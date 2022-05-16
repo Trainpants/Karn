@@ -40,7 +40,10 @@ async def process_learn(mention,text):
 
     with open("learns.json","r") as learn_file:
         learns = json.load(learn_file)
-
+    
+    if "!" not in mention: # if mention not in learn list, the mention doesn't have a ! in it for some reason ¯\_(ツ)_/¯
+        mention = mention[0:2]+"!"+mention[2:]
+    
     if mention not in learns:
         learns[mention] = [text]
     else:
@@ -58,6 +61,10 @@ async def process_gimme(message):
         mention = split_message[1].strip()
         with open("learns.json","r") as learn_file:
             learn_dict = json.load(learn_file)
+        
+        if "!" not in mention: # if mention not in learn list, the mention doesn't have a ! in it for some reason ¯\_(ツ)_/¯
+            mention = mention[0:2]+"!"+mention[2:]
+        
         if mention in learn_dict:
             await message.channel.send(random.choice(learn_dict[mention]), reference=message)
 
