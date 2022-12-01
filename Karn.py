@@ -50,7 +50,7 @@ async def roll(ctx, dice: str):
     if dev_channel_check(ctx.channel,is_dev_env):
         return
 
-    await ctx.send("You've lost your rolling priviledges.")
+    await ctx.send("You've lost your rolling privileges.")
 
 #    if bool(re.match("\d*d\d+", dice)):
 #        rolls, sides = dice.split("d")
