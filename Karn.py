@@ -50,20 +50,26 @@ async def roll(ctx, dice: str):
     if dev_channel_check(ctx.channel,is_dev_env):
         return
 
-    await ctx.send("You've lost your rolling privileges.")
+#    await ctx.send("You've lost your rolling privileges.")
 
-#    if bool(re.match("\d*d\d+", dice)):
-#        rolls, sides = dice.split("d")
-#        if not rolls:
-#            rolls = "1"
-#        rolls = int(rolls)
-#        sides = int(sides)
-#        if rolls > 0 and sides > 0:
-#            for i in range(rolls):
-#                roll = random.randint(1,sides)
-#                await ctx.send(roll)
-#        else:
-#            await ctx.send("nice try, idiot")
+    if bool(re.match("\d*d\d+", dice)):
+        rolls, sides = dice.split("d")
+        if not rolls:
+            rolls = "1"
+        rolls = int(rolls)
+        sides = int(sides)
+        
+        if rolls > 0 and sides > 0:
+            output = "("
+            sum = 0
+            for i in range(rolls):
+                roll = random.randint(1,sides)
+                sum += roll
+                output += str(roll) + " + "
+            output = output[:-3] + ")\n" + str(sum)
+            await ctx.send(output)
+        else:
+            await ctx.send("nice try, idiot")
 
 
 
