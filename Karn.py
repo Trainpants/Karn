@@ -116,6 +116,9 @@ async def learnsearch(ctx, mention, *, search_text):
         learns = json.load(learn_file) 
     output = "" 
     pattern = search_text
+    if "!" not in mention: #these mentions format without a ! for some reason ¯\_(ツ)_/¯
+        if "<" in mention and ">" in mention:
+            mention = mention[0:2]+"!"+mention[2:]
     for learn in learns[mention]:
         if bool(re.search(pattern, learn)):
             output += learn + "\n"
@@ -132,6 +135,9 @@ async def learnlist(ctx, mention):
     with open("learns.json","r") as learn_file:
         learns = json.load(learn_file) 
     output = ""
+    if "!" not in mention: #these mentions format without a ! for some reason ¯\_(ツ)_/¯
+        if "<" in mention and ">" in mention:
+            mention = mention[0:2]+"!"+mention[2:]
     for learn in learns[mention]:
         output += learn + "\n"
     await ctx.send(output.strip())
